@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Age on Other Worlds | Solar System Calculator</title>
+<style>
+:root{--bg:#080d1b;--panel:#111a2e;--panel2:#17233b;--text:#f4f7ff;--muted:#aab6d0;--accent:#8b9cff;--line:rgba(255,255,255,.1)}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif;background:radial-gradient(ellipse at 15% 10%,#263565 0,transparent 35%),radial-gradient(ellipse at 85% 25%,#34204e 0,transparent 32%),linear-gradient(145deg,#070b17,#0c1428 60%,#080d1b)}
+.wrap{width:min(1100px,92%);margin:auto;padding:42px 0 30px}
+header{text-align:center;margin-bottom:30px}
+.eyebrow{color:#b9c5ff;letter-spacing:3px;text-transform:uppercase;font-size:.75rem;font-weight:700}
+h1{font-size:clamp(2.2rem,6vw,4.3rem);margin:12px 0 10px;line-height:1.05;letter-spacing:-2px}
+h1 span{color:#aebaff}
+.subtitle{max-width:650px;margin:0 auto;color:var(--muted);line-height:1.65}
+.student{display:inline-block;margin-top:20px;padding:10px 16px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.06);font-size:.88rem;color:#e4e9ff}
+.student strong{color:white}
+.calculator{display:grid;grid-template-columns:1fr auto;gap:20px;align-items:end;padding:24px;background:rgba(17,26,46,.88);border:1px solid var(--line);border-radius:22px;box-shadow:0 18px 60px #0004}
+label{display:block;font-weight:700;margin-bottom:10px}
+input{width:100%;max-width:420px;padding:14px 15px;border-radius:12px;border:1px solid #394765;background:#0b1325;color:white;font-size:1rem;color-scheme:dark}
+button{border:0;border-radius:12px;padding:15px 22px;font-weight:800;font-size:.95rem;cursor:pointer;background:linear-gradient(135deg,#9ba9ff,#c1a5ff);color:#11152b;transition:transform .15s,filter .15s}
+button:hover{transform:translateY(-2px);filter:brightness(1.08)}
+.hint{color:var(--muted);font-size:.82rem;margin-top:9px}
+#status{color:#ffb6b6;font-size:.9rem;margin-top:10px;min-height:1.2em}
+.results-head{display:flex;justify-content:space-between;align-items:end;gap:16px;margin:34px 2px 16px}
+h2{margin:0;font-size:1.45rem}
+.results-head p{margin:5px 0 0;color:var(--muted);font-size:.9rem}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
+.card{position:relative;overflow:hidden;background:linear-gradient(145deg,rgba(25,37,62,.96),rgba(14,22,40,.96));border:1px solid var(--line);border-radius:18px;padding:19px;min-height:168px}
+.card:after{content:"";position:absolute;width:120px;height:120px;border-radius:50%;right:-45px;top:-45px;background:var(--glow);filter:blur(35px);opacity:.22}
+.planet-top{display:flex;align-items:center;gap:12px;position:relative;z-index:1}
+.planet{width:48px;height:48px;border-radius:50%;flex:0 0 48px;background:var(--planet);box-shadow:inset -9px -7px 13px #0008,0 0 20px var(--glow)}
+.planet.ring:after{content:"";display:block;width:67px;height:17px;border:3px solid #d9c5a4;border-left-color:#a88e75;border-right-color:#a88e75;border-radius:50%;transform:translate(-12px,15px) rotate(-18deg)}
+.name{font-weight:800;font-size:1.06rem}
+.year{font-size:.78rem;color:var(--muted);margin-top:4px}
+.age{position:relative;z-index:1;margin-top:19px;font-size:1.65rem;font-weight:850;letter-spacing:-.5px}
+.age small{font-size:.78rem;font-weight:600;color:var(--muted);letter-spacing:0}
+.note{position:relative;z-index:1;color:var(--muted);font-size:.78rem;margin-top:4px}
+.placeholder{color:#b9c5ff}
+footer{margin-top:28px;padding:18px 2px;border-top:1px solid var(--line);color:var(--muted);font-size:.8rem;line-height:1.6;text-align:center}
+footer strong{color:#e8ecff}
+@media(max-width:760px){.grid{grid-template-columns:repeat(2,1fr)}.calculator{grid-template-columns:1fr}.calculator button{width:100%}}
+@media(max-width:480px){.wrap{padding-top:28px}.grid{grid-template-columns:1fr}.results-head{display:block}.student{border-radius:14px;line-height:1.6}}
+</style>
+</head>
+<body>
+<main class="wrap">
+<header>
+  <div class="eyebrow">A journey around the Sun</div>
+  <h1>Age on <span>Other Worlds</span></h1>
+  <p class="subtitle">Ever wondered how old you would be on another planet? Enter your birthday and discover how many planetary years you have lived across our Solar System.</p>
+  <div class="student"><strong>Created by:</strong> Rain Avian V. Bagalanon &nbsp;|&nbsp; BSIT - 1C</div>
+</header>
+
+<section class="calculator" aria-label="Birthday calculator">
+  <div>
+    <label for="birthday">Enter your date of birth</label>
+    <input type="date" id="birthday">
+    <div class="hint">Your age is calculated using the number of Earth days between your birthday and today.</div>
+    <div id="status" role="alert"></div>
+  </div>
+  <button id="calculate" type="button">Calculate my space age ↗</button>
+</section>
+
+<section>
+  <div class="results-head">
+    <div><h2>Your age across the Solar System</h2><p id="days">Choose your birthday to reveal your planetary ages.</p></div>
+  </div>
+  <div class="grid" id="planetGrid">
+    <article class="card" style="--planet:#a9a9a9;--glow:#bfc8d9"><div class="planet-top"><div class="planet"></div><div><div class="name">Mercury</div><div class="year">1 year = 88 Earth days</div></div></div><div class="age placeholder">— <small>years old</small></div><div class="note">The fastest orbit around the Sun</div></article>
+    <article class="card" style="--planet:#d99c65;--glow:#e9a96d"><div class="planet-top"><div class="planet"></div><div><div class="name">Venus</div><div class="year">1 year = 225 Earth days</div></div></div><div class="age placeholder">— <small>years old</small></div><div class="note">A year shorter than Earth's</div></article>
+    <article class="card" style="--planet:#2879c7;--glow:#4e9cff"><div class="planet-top"><div class="planet"></div><div><div class="name">Earth</div><div class="year">1 year = 365 Earth days</div></div></div><div class="age placeholder">— <small>years old</small></div><div class="note">Our home planet</div></article>
+    <article class="card" style="--planet:#c96e4e;--glow:#e57c5b"><div class="planet-top"><div class="planet"></div><div><div class="name">Mars</div><div class="year">1 year = 687 Earth days</div></div></div><div class="age placeholder">— <small>years old</small></div><div class="note">The Red Planet</div></article>
+    <article class="card" style="--planet:#d6b58c;--glow:#d8b47d"><div class="planet-top"><div class="planet"></div><div><div class="name">Jupiter</div><div class="year">1 year = 4,380 Earth days</div></div></div><div class="age placeholder">— <small>years old</small></div><div class="note">The largest planet</div></article>
+    <article class="card" style="--planet:#d7bd8c;--glow:#e4c99a"><div class="planet-top"><div class="planet ring"></div><div><div class="name">Saturn</div><div class="year">1 year = 10,767.5 Earth days</div></div></div><div class="age placeholder">— <small>years old</small></div><div class="note">Famous for its rings</div></article>
+    <article class="card" style="--planet:#8bd5dc;--glow:#8be0e8"><div class="planet-top"><div class="planet"></div><div><div class="name">Uranus</div><div class="year">1 year = 30,660 Earth days</div></div></div><div class="age placeholder">— <small>years old</small></div><div class="note">An ice giant that rotates on its side</div></article>
+    <article class="card" style="--planet:#4778d7;--glow:#5388ff"><div class="planet-top"><div class="planet"></div><div><div class="name">Neptune</div><div class="year">1 year = 60,152 Earth days</div></div></div><div class="age placeholder">— <small>years old</small></div><div class="note">A distant, deep-blue ice giant</div></article>
+    <article class="card" style="--planet:#b9a89d;--glow:#d6c2b6"><div class="planet-top"><div class="planet"></div><div><div class="name">Pluto</div><div class="year">1 year ≈ 90,520 Earth days</div></div></div><div class="age placeholder">— <small>years old</small></div><div class="note">A dwarf planet, reclassified in 2006</div></article>
+  </div>
+</section>
+<footer>
+  <strong>How it works:</strong> Earth days lived ÷ a world's year length in Earth days = your age on that world.<br>
+  This activity includes Pluto for comparison. Pluto is officially classified as a dwarf planet, so the Solar System has eight recognized planets.
+</footer>
+</main>
+<script>
+const planets = [
+  {name:"Mercury",days:88,note:"The fastest orbit around the Sun"},
+  {name:"Venus",days:225,note:"A year shorter than Earth's"},
+  {name:"Earth",days:365,note:"Our home planet"},
+  {name:"Mars",days:687,note:"The Red Planet"},
+  {name:"Jupiter",days:4380,note:"The largest planet"},
+  {name:"Saturn",days:10767.5,note:"Famous for its rings"},
+  {name:"Uranus",days:30660,note:"An ice giant that rotates on its side"},
+  {name:"Neptune",days:60152,note:"A distant, deep-blue ice giant"},
+  {name:"Pluto",days:90520,note:"A dwarf planet, reclassified in 2006"}
+];
+const birthday=document.getElementById("birthday");
+const button=document.getElementById("calculate");
+const status=document.getElementById("status");
+const grid=document.getElementById("planetGrid");
+const daysLine=document.getElementById("days");
+const today=new Date();
+const localToday=new Date(today.getFullYear(),today.getMonth(),today.getDate());
+birthday.max=[today.getFullYear(),String(today.getMonth()+1).padStart(2,"0"),String(today.getDate()).padStart(2,"0")].join("-");
+button.addEventListener("click",()=>{
+  status.textContent="";
+  if(!birthday.value){status.textContent="Please enter your birthday first.";return;}
+  const [y,m,d]=birthday.value.split("-").map(Number);
+  const born=new Date(y,m-1,d);
+  if(Number.isNaN(born.getTime())||born>localToday){status.textContent="Please choose a valid birthday that is not in the future.";return;}
+  const earthDays=Math.floor((localToday-born)/86400000);
+  daysLine.textContent=`You have lived ${earthDays.toLocaleString()} Earth days. Here is your age on each world:`;
+  grid.innerHTML=planets.map(p=>{
+    const age=earthDays/p.days;
+    const shown=age.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+    return `<article class="card"><div class="planet-top"><div class="planet ${p.name==="Saturn"?"ring":""}" style="--planet:${({Mercury:"#a9a9a9",Venus:"#d99c65",Earth:"#2879c7",Mars:"#c96e4e",Jupiter:"#d6b58c",Saturn:"#d7bd8c",Uranus:"#8bd5dc",Neptune:"#4778d7",Pluto:"#b9a89d"})[p.name]};--glow:${({Mercury:"#bfc8d9",Venus:"#e9a96d",Earth:"#4e9cff",Mars:"#e57c5b",Jupiter:"#d8b47d",Saturn:"#e4c99a",Uranus:"#8be0e8",Neptune:"#5388ff",Pluto:"#d6c2b6"})[p.name]}"></div><div><div class="name">${p.name}</div><div class="year">1 year = ${p.days.toLocaleString()} Earth days</div></div></div><div class="age">${shown} <small>years old</small></div><div class="note">${p.note}</div></article>`;
+  }).join("");
+});
+</script>
+</body>
+</html>
